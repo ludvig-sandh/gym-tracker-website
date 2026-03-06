@@ -20,9 +20,9 @@ def login():
         name = request.form.get("name", "").strip()
         password = request.form.get("password", "")
 
-        user = User.query.filter_by(name=name, password=password).first()
+        user = User.query.filter_by(name=name).first()
 
-        if user:
+        if user and user.check_password(password):
             message = f"Logged in as {user.name}."
         else:
             message = "Invalid name or password."
@@ -46,7 +46,8 @@ def register():
         elif User.query.filter_by(name=name).first():
             message = "A user with that name already exists."
         else:
-            user = User(name=name, password=password)
+            user = User(name=name)
+            user.set_password(password)
             db.session.add(user)
             db.session.commit()
             return redirect(url_for("main.login"))
