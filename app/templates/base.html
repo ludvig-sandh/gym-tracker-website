@@ -10,6 +10,9 @@
     <header class="site-header">
       <div class="container">
         <h1>Gym Tracker</h1>
+        {% if g.user %}
+        <p>Signed in as {{ g.user.name }}</p>
+        {% endif %}
       </div>
     </header>
     <main class="container">

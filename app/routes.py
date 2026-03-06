@@ -1,4 +1,6 @@
-from flask import Blueprint, redirect, render_template, request, url_for
+from functools import wraps
+
+from flask import Blueprint, g, redirect, render_template, request, session, url_for
 
 from app.extensions import db
 from app.models import User
@@ -7,14 +9,39 @@ from app.models import User
 main = Blueprint("main", __name__)
 
 
+def login_required(view):
+    @wraps(view)
+    def wrapped_view(*args, **kwargs):
+        if g.user is None:
+            return redirect(url_for("main.login"))
+
+        return view(*args, **kwargs)
+
+    return wrapped_view
+
+
+@main.before_app_request
+def load_logged_in_user():
+    user_id = session.get("user_id")
+
+    if user_id is None:
+        g.user = None
+    else:
+        g.user = db.session.get(User, user_id)
+
+
 @main.route("/")
+@login_required
 def index():
-    return redirect(url_for("main.login"))
+    return render_template("index.html")
 
 
 @main.route("/login", methods=["GET", "POST"])
 def login():
     message = None
+
+    if g.user is not None:
+        return redirect(url_for("main.index"))
 
     if request.method == "POST":
         name = request.form.get("name", "").strip()
@@ -23,7 +50,9 @@ def login():
         user = User.query.filter_by(name=name).first()
 
         if user and user.check_password(password):
-            message = f"Logged in as {user.name}."
+            session.clear()
+            session["user_id"] = user.id
+            return redirect(url_for("main.index"))
         else:
             message = "Invalid name or password."
 
@@ -33,6 +62,9 @@ def login():
 @main.route("/register", methods=["GET", "POST"])
 def register():
     message = None
+
+    if g.user is not None:
+        return redirect(url_for("main.index"))
 
     if request.method == "POST":
         name = request.form.get("name", "").strip()
@@ -53,3 +85,10 @@ def register():
             return redirect(url_for("main.login"))
 
     return render_template("register.html", message=message)
+
+
+@main.route("/logout", methods=["POST"])
+@login_required
+def logout():
+    session.clear()
+    return redirect(url_for("main.login"))
