@@ -1,5 +1,6 @@
 from flask import Blueprint, redirect, render_template, request, url_for
 
+from app.extensions import db
 from app.models import User
 
 
@@ -27,3 +28,27 @@ def login():
             message = "Invalid name or password."
 
     return render_template("login.html", message=message)
+
+
+@main.route("/register", methods=["GET", "POST"])
+def register():
+    message = None
+
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        password = request.form.get("password", "")
+        repeat_password = request.form.get("repeat_password", "")
+
+        if not name or not password:
+            message = "Name and password are required."
+        elif password != repeat_password:
+            message = "Passwords do not match."
+        elif User.query.filter_by(name=name).first():
+            message = "A user with that name already exists."
+        else:
+            user = User(name=name, password=password)
+            db.session.add(user)
+            db.session.commit()
+            return redirect(url_for("main.login"))
+
+    return render_template("register.html", message=message)
