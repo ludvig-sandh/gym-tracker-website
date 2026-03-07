@@ -1,0 +1,125 @@
+.blue_box {
+    position: absolute;
+}
+
+.text_and_field {
+    display: flex;
+    align-items: center;
+}
+
+.new_post_container {
+    position: absolute;
+}
+
+.input_field {
+    position: absolute;
+    right: 0;
+    width: 70%;
+}
+
+.links {
+    display: flex;
+}
+
+.center {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}
+
+.left, .center, .right {
+    width: 40%;
+}
+
+.list {
+    position: absolute;
+    top: 15rem;
+
+    overflow-y: scroll;
+
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.list::-webkit-scrollbar {
+    display: none;
+}
+
+
+.list > .box {
+    margin-top: 0.6rem;
+}
+
+.list > .flexrow:not(:first-child) {
+    margin-top: 30px;
+}
+
+.text_right {
+    text-align: right;
+    position: absolute;
+    right: 0px;
+}
+
+.flexrow {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+}
+
+.flexrow > * {
+    margin-bottom: 1.5rem;
+}
+
+
+/* For mobile */
+@media screen and (max-width: 768px) {
+    .list {
+        width: calc(100% - 120px);
+        bottom: 38rem;
+    }
+
+    .new_post_container {
+        width: calc(100% - 120px);
+        bottom: 300px;
+    }
+
+    .blue_box {
+        width: calc(100% - 120px);
+        bottom: 150px;
+    }
+
+    .text_and_field {
+        margin-top: 60px;
+    }
+}
+
+/* For desktop */
+@media screen and (min-width: 769px) {
+    .list {
+        width: calc(50% - 120px);
+        bottom: 60px;
+    }
+
+    .new_post_container {
+        width: calc(50% - 120px);
+        transform: translateX(calc(100% + 120px));
+        bottom: calc(140px + 10vh);
+    }
+
+    .blue_box {
+        width: calc(50% - 120px);
+        transform: translateX(calc(100% + 120px));
+        bottom: calc(75px + 5vh);
+    }
+
+    .back {
+        transform: translateX(calc(100% + 120px));
+    }
+    
+    .text_and_field {
+        margin-top: calc(2rem + 5px);
+    }
+}

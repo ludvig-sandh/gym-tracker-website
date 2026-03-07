@@ -1,0 +1,82 @@
+.blue_box {
+    width: calc(100% - 120px);
+    position: absolute;
+    bottom: 150px;
+}
+
+.text_and_field {
+    display: flex;
+    align-items: center;
+    margin-top: 60px;
+}
+
+.new_post_container {
+    position: absolute;
+    bottom: 300px;
+    width: calc(100% - 120px);
+}
+
+.input_field {
+    position: absolute;
+    right: 0;
+    width: 70%;
+}
+
+.links {
+    display: flex;
+}
+
+.center {
+    text-align: center;
+}
+
+.right {
+    text-align: right;
+}
+
+.left, .center, .right {
+    width: 40%;
+}
+
+.list {
+    width: calc(100% - 120px);
+
+    position: absolute;
+    top: 15rem;
+    bottom: 38rem;
+
+    overflow-y: scroll;
+
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.list::-webkit-scrollbar {
+    display: none;
+}
+
+
+.list > .box {
+    margin-top: 0.6rem;
+}
+
+.list > .flexrow:not(:first-child) {
+    margin-top: 30px;
+}
+
+.text_right {
+    text-align: right;
+    position: absolute;
+    right: 0px;
+}
+
+.flexrow {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+}
+
+.flexrow > * {
+    margin-bottom: 1.5rem;
+}

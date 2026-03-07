@@ -1,9 +1,10 @@
+import datetime
 from functools import wraps
 
 from flask import Blueprint, g, redirect, render_template, request, session, url_for
 
 from app.extensions import db
-from app.models import Exercise, MuscleGroup, User
+from app.models import Exercise, ExerciseEntry, MuscleGroup, User
 
 
 main = Blueprint("main", __name__)
@@ -146,6 +147,118 @@ def exercises_index():
         muscle_groups=muscle_groups,
         selected_muscle_group=selected_muscle_group,
     )
+
+
+def _format_entry_value(value):
+    if value is None:
+        return None
+    return int(value) if value == int(value) else value
+
+
+def _build_exercise_days(exercise):
+    entries = (
+        ExerciseEntry.query.filter_by(exercise_id=exercise.id)
+        .order_by(ExerciseEntry.created_at.desc(), ExerciseEntry.id.desc())
+        .all()
+    )
+
+    days = []
+    today = datetime.datetime.today().date()
+
+    for entry in entries:
+        entry_date = entry.created_at.date()
+
+        if not days or days[-1]["entry_date"] != entry_date:
+            if entry_date == today:
+                label_date = "Idag"
+            elif entry_date == today - datetime.timedelta(days=1):
+                label_date = "Igår"
+            else:
+                label_date = entry.created_at.strftime("%a, %b %d")
+
+            days.append(
+                {
+                    "entry_date": entry_date,
+                    "date": label_date,
+                    "volume": 0,
+                    "entries": [],
+                }
+            )
+
+        value1 = _format_entry_value(entry.value1)
+        value2 = _format_entry_value(entry.value2)
+        label_parts = [f"{exercise.param1}: {value1}"]
+
+        if exercise.param2 and value2 is not None:
+            label_parts.append(f"{exercise.param2}: {value2}")
+            days[-1]["volume"] += entry.value1 * entry.value2
+            label_parts.append(f"volym: {_format_entry_value(entry.value1 * entry.value2)}")
+
+        days[-1]["entries"].append(
+            {
+                "entry": entry,
+                "label": ", ".join(label_parts),
+            }
+        )
+
+    for day in days:
+        day.pop("entry_date", None)
+        day["volume"] = _format_entry_value(day["volume"])
+
+    return days
+
+
+@main.route("/exercise/<int:exercise_id>")
+@main.route("/exercises/<int:exercise_id>")
+@login_required
+def exercises_show(exercise_id):
+    exercise = Exercise.query.filter_by(id=exercise_id, user_id=g.user.id).first()
+
+    if exercise is None:
+        return display_error("Denna övningen finns inte.", url_for("main.exercises_index"))
+
+    return render_template(
+        "exercises/show.html",
+        mobile=mobile(),
+        title=exercise.name,
+        exercise=exercise,
+        days=_build_exercise_days(exercise),
+    )
+
+
+@main.route("/exercise/<int:exercise_id>/entries", methods=["POST"])
+@main.route("/exercises/<int:exercise_id>/entries", methods=["POST"])
+@login_required
+def exercise_entries_create(exercise_id):
+    exercise = Exercise.query.filter_by(id=exercise_id, user_id=g.user.id).first()
+
+    if exercise is None:
+        return display_error("Denna övningen finns inte.", url_for("main.exercises_index"))
+
+    value1_raw = request.form.get("value1", "").strip()
+    value2_raw = request.form.get("value2", "").strip()
+
+    if not value1_raw:
+        return display_error("Första värdet får inte vara tomt.", url_for("main.exercises_show", exercise_id=exercise.id))
+
+    if exercise.param2 and not value2_raw:
+        return display_error("Andra värdet får inte vara tomt.", url_for("main.exercises_show", exercise_id=exercise.id))
+
+    try:
+        value1 = float(value1_raw)
+        value2 = float(value2_raw) if value2_raw else None
+    except ValueError:
+        return display_error("Värdena måste vara siffror.", url_for("main.exercises_show", exercise_id=exercise.id))
+
+    entry = ExerciseEntry(
+        exercise_id=exercise.id,
+        value1=value1,
+        value2=value2,
+    )
+    db.session.add(entry)
+    db.session.commit()
+
+    return redirect(url_for("main.exercises_show", exercise_id=exercise.id))
 
 
 @main.route("/exercise/new", methods=["GET", "POST"])

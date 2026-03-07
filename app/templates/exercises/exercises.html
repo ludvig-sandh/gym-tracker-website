@@ -36,13 +36,13 @@
         </div>
         <div class="övningar_wrapper">
             {% for exercise in exercises %}
-                <div class="box">
+                <a class="box link" href="{{ url_for('main.exercises_show', exercise_id=exercise.id) }}">
                     <h4 class="text">{{exercise.name}}</h4>
                     {% if exercise.is_favorited %}
                         <img class="star" src="/static/img/star.svg" alt="Favorit">
                     {% endif %}
                     <img class="arrow" src="/static/img/arrow.svg" alt="">
-                </div>
+                </a>
             {% else %}
                 <div class="box">
                     <h4 class="text">Inga övningar hittades.</h4>

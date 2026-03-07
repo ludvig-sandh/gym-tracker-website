@@ -1,0 +1,58 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+    {% if mobile == True %}
+        <link href="{{ url_for('static', filename='css/mobile/exercises/show.css') }}" rel="stylesheet">
+    {% else %}
+        <link href="{{ url_for('static', filename='css/desktop/exercises/show.css') }}" rel="stylesheet">
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="links">
+        <a class="subtitle link link_enabled left" href="/exercises/{{ exercise.id }}/statistics">Statistik ></a>
+        <a class="subtitle link link_enabled center" href="/exercises/{{ exercise.id }}/edit">Redigera ></a>
+        <a class="subtitle link link_enabled right"  href="/exercises/{{ exercise.id }}/delete">Ta bort!</a>
+    </div>
+
+    <div class="list margin_top_60px">
+        {% for day in days %}
+            <div class="flexrow">
+                <h4 class="text text_above">{{ day['date'] }}</h4>
+                <h4 class="text text_above text_right">Volym: {{ day['volume'] }}</h4>
+            </div>
+            {% for item in day['entries'] %}
+                <a class="box link" href="/exercises/{{ exercise.id }}/entries/{{ item['entry'].id }}/edit">
+                    <h4 class="text">{{ item['label'] }}</h4>
+                    <img class="arrow" src="/static/img/arrow.svg" alt="">
+                </a>
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    <form action="/exercises/{{ exercise.id }}/entries" method="post">
+        <div class="new_post_container">
+
+            <h4 class="text text_above">Nytt inlägg</h4>
+
+            {% if exercise.param1 %}
+                <div class="text_and_field">
+                    <h4 class="text">{{ exercise.param1 }}</h4>
+                    <input class="input_field" type="number" min="0", step="0.01" name="value1">
+                </div>
+            {% endif %}
+
+            {% if exercise.param2 %}
+                <div class="text_and_field">
+                    <h4 class="text">{{ exercise.param2 }}</h4>
+                    <input class="input_field" type="number" min="0", step="0.01" name="value2">
+                </div>
+            {% endif %}
+        </div>
+        <input class="text blue_box btn" type="submit" value="Skapa">
+    </form>
+
+    <a href="/exercises" class="back btn link">
+        <p class="text">Tillbaka</p>
+    </a>
+{% endblock %}
