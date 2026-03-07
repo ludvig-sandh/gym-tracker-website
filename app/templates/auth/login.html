@@ -18,10 +18,11 @@
                 </div>
                 <div class="text_and_field">
                     <h4 class="text text_above margin_top_40px">Lösenord</h4>
-                    <input class="input_field" type="text" name="password">
+                    <input class="input_field" type="password" name="password">
                 </div>
             </div>
             <input class="text blue_box btn" type="submit" name="log_in" value="Logga in">
         </form>
+        <a class="text blue_box btn link register_btn" href="{{ url_for('main.register') }}">Registrera</a>
     </div>
 {% endblock %}

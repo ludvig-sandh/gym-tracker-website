@@ -3,18 +3,17 @@
     width: 100%;
 }
 
-.log_in_container {
+.register_container {
     width: 100%;
 }
 
-.register_btn {
+.cancel_btn {
     display: flex;
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
 }
 
-/* For mobile */
 @media screen and (max-width: 768px) {
     .center {
         width: calc(100% - 46px);
@@ -23,13 +22,12 @@
     }
 }
 
-/* For desktop */
 @media screen and (min-width: 769px) {
     .center {
         width: calc(50% - 120px);
         transform: translateX(calc(50% + 60px));
         position: absolute;
-        bottom: 20vh;
+        bottom: 12vh;
     }
 
     .title {

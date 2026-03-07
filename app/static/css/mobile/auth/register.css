@@ -1,13 +1,13 @@
 .blue_box {
-    width: calc(100%);
+    width: 100%;
     margin-top: 60px;
 }
 
-.log_in_container {
+.register_container {
     width: 100%;
 }
 
-.register_btn {
+.cancel_btn {
     display: flex;
     align-items: center;
     justify-content: center;

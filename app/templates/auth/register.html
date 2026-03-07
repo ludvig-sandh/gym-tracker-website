@@ -1,27 +1,32 @@
-{% extends "base.html" %}
+{% extends 'layout.html' %}
 
-{% block title %}Register | Gym Tracker{% endblock %}
+{% block css %}
+    {% if mobile == True %}
+        <link href="{{ url_for('static', filename='css/mobile/auth/register.css') }}" rel="stylesheet">
+    {% else %}
+        <link href="{{ url_for('static', filename='css/desktop/auth/register.css') }}" rel="stylesheet">
+    {% endif %}
+{% endblock %}
 
 {% block content %}
-<h2>Register</h2>
-
-{% if message %}
-<p>{{ message }}</p>
-{% endif %}
-
-<form method="post">
-  <div>
-    <label for="name">Name</label>
-    <input id="name" name="name" type="text" required>
-  </div>
-  <div>
-    <label for="password">Password</label>
-    <input id="password" name="password" type="password" required>
-  </div>
-  <div>
-    <label for="repeat_password">Repeat password</label>
-    <input id="repeat_password" name="repeat_password" type="password" required>
-  </div>
-  <button type="submit">Create account</button>
-</form>
+    <div class="center">
+        <form class="register_container" action="{{ url_for('main.register') }}" method="post">
+            <div>
+                <div class="text_and_field">
+                    <h4 class="text text_above margin_top_40px">Användarnamn</h4>
+                    <input class="input_field" type="text" name="name">
+                </div>
+                <div class="text_and_field">
+                    <h4 class="text text_above margin_top_40px">Lösenord</h4>
+                    <input class="input_field" type="password" name="password">
+                </div>
+                <div class="text_and_field">
+                    <h4 class="text text_above margin_top_40px">Bekräfta lösenord</h4>
+                    <input class="input_field" type="password" name="repeat_password">
+                </div>
+            </div>
+            <input class="text blue_box btn" type="submit" value="Registrera">
+        </form>
+        <a class="text blue_box btn link cancel_btn" href="{{ url_for('main.login') }}">Avbryt</a>
+    </div>
 {% endblock %}
