@@ -10,7 +10,7 @@
 
 {% block content %}
     <div class="uppertext">
-        <h4 class="text">Tid skapad: {{ exercise_entry.created_at.strftime('%Y-%m-%d %H:%M') }}</h4>
+        <h4 class="text">Tid skapad: {{ created_at_display }}</h4>
         <a class="text link link_enabled ta_bort"  href="{{ url_for('main.exercise_entries_delete', exercise_id=exercise.id, entry_id=exercise_entry.id) }}">Ta bort!</a>
     </div>
 

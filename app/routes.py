@@ -155,6 +155,10 @@ def _format_entry_value(value):
     return int(value) if value == int(value) else value
 
 
+def _format_display_date(value):
+    return value.strftime("%a, %d %b %Y")
+
+
 def _build_exercise_days(exercise):
     entries = (
         ExerciseEntry.query.filter_by(exercise_id=exercise.id)
@@ -164,7 +168,6 @@ def _build_exercise_days(exercise):
 
     days = []
     today = datetime.datetime.today().date()
-
     for entry in entries:
         entry_date = entry.created_at.date()
 
@@ -174,7 +177,7 @@ def _build_exercise_days(exercise):
             elif entry_date == today - datetime.timedelta(days=1):
                 label_date = "Igår"
             else:
-                label_date = entry.created_at.strftime("%a, %b %d")
+                label_date = _format_display_date(entry.created_at)
 
             days.append(
                 {
@@ -306,6 +309,7 @@ def exercise_entries_edit(exercise_id, entry_id):
         title="REDIGERA INLAGG",
         exercise=exercise,
         exercise_entry=entry,
+        created_at_display=_format_display_date(entry.created_at),
     )
 
 
