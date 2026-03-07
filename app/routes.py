@@ -309,6 +309,31 @@ def exercise_entries_edit(exercise_id, entry_id):
     )
 
 
+@main.route("/exercise/<int:exercise_id>/entries/<int:entry_id>/delete", methods=["GET", "POST"])
+@main.route("/exercises/<int:exercise_id>/entries/<int:entry_id>/delete", methods=["GET", "POST"])
+@login_required
+def exercise_entries_delete(exercise_id, entry_id):
+    exercise, entry = _get_user_exercise_entry(exercise_id, entry_id)
+
+    if exercise is None:
+        return display_error("Denna övningen finns inte.", url_for("main.exercises_index"))
+    if entry is None:
+        return display_error("Detta inlägget finns inte.", url_for("main.exercises_show", exercise_id=exercise.id))
+
+    if request.method == "POST":
+        db.session.delete(entry)
+        db.session.commit()
+        return redirect(url_for("main.exercises_show", exercise_id=exercise.id))
+
+    return render_template(
+        "exercise_events/delete.html",
+        mobile=mobile(),
+        title="RADERA INLAGG",
+        exercise=exercise,
+        exercise_entry=entry,
+    )
+
+
 @main.route("/exercise/new", methods=["GET", "POST"])
 @main.route("/exercises/new", methods=["GET", "POST"])
 @login_required

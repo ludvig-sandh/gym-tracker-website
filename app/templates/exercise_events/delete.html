@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+    {% if mobile == True %}
+    <link href="{{ url_for('static', filename='css/mobile/exercise_events/delete.css') }}" rel="stylesheet">
+    {% else %}
+    <link href="{{ url_for('static', filename='css/desktop/exercise_events/delete.css') }}" rel="stylesheet">
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="events_show_container">
+        <h4 class="subtitle">Är du säker på att du vill ta bort detta inlägg?</h4>
+
+        <form action="{{ url_for('main.exercise_entries_delete', exercise_id=exercise.id, entry_id=exercise_entry.id) }}" method="post">
+            <input class="text blue_box red_box btn" type="submit" name="Radera" value="Radera">
+        </form>
+    </div>
+
+    <a href="{{ url_for('main.exercise_entries_edit', exercise_id=exercise.id, entry_id=exercise_entry.id) }}" class="back btn link">
+        <p class="text">Tillbaka</p>
+    </a>
+{% endblock %}
