@@ -208,6 +208,16 @@ def _build_exercise_days(exercise):
     return days
 
 
+def _get_user_exercise_entry(exercise_id, entry_id):
+    exercise = Exercise.query.filter_by(id=exercise_id, user_id=g.user.id).first()
+
+    if exercise is None:
+        return None, None
+
+    entry = ExerciseEntry.query.filter_by(id=entry_id, exercise_id=exercise.id).first()
+    return exercise, entry
+
+
 @main.route("/exercise/<int:exercise_id>")
 @main.route("/exercises/<int:exercise_id>")
 @login_required
@@ -259,6 +269,44 @@ def exercise_entries_create(exercise_id):
     db.session.commit()
 
     return redirect(url_for("main.exercises_show", exercise_id=exercise.id))
+
+
+@main.route("/exercise/<int:exercise_id>/entries/<int:entry_id>/edit", methods=["GET", "POST"])
+@main.route("/exercises/<int:exercise_id>/entries/<int:entry_id>/edit", methods=["GET", "POST"])
+@login_required
+def exercise_entries_edit(exercise_id, entry_id):
+    exercise, entry = _get_user_exercise_entry(exercise_id, entry_id)
+
+    if exercise is None:
+        return display_error("Denna övningen finns inte.", url_for("main.exercises_index"))
+    if entry is None:
+        return display_error("Detta inlägget finns inte.", url_for("main.exercises_show", exercise_id=exercise.id))
+
+    if request.method == "POST":
+        value1_raw = request.form.get("value1", "").strip()
+        value2_raw = request.form.get("value2", "").strip()
+
+        if not value1_raw:
+            return display_error("Första värdet får inte vara tomt.", request.path)
+        if exercise.param2 and not value2_raw:
+            return display_error("Andra värdet får inte vara tomt.", request.path)
+
+        try:
+            entry.value1 = float(value1_raw)
+            entry.value2 = float(value2_raw) if value2_raw else None
+        except ValueError:
+            return display_error("Värdena måste vara siffror.", request.path)
+
+        db.session.commit()
+        return redirect(url_for("main.exercises_show", exercise_id=exercise.id))
+
+    return render_template(
+        "exercise_events/edit.html",
+        mobile=mobile(),
+        title="REDIGERA INLAGG",
+        exercise=exercise,
+        exercise_entry=entry,
+    )
 
 
 @main.route("/exercise/new", methods=["GET", "POST"])

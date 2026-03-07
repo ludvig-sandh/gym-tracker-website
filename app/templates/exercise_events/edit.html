@@ -1,0 +1,42 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+    {% if mobile == True %}
+        <link href="{{ url_for('static', filename='css/mobile/exercise_events/edit.css') }}" rel="stylesheet">
+    {% else %}
+        <link href="{{ url_for('static', filename='css/desktop/exercise_events/edit.css') }}" rel="stylesheet">
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="uppertext">
+        <h4 class="text">Tid skapad: {{ exercise_entry.created_at.strftime('%Y-%m-%d %H:%M') }}</h4>
+        <a class="text link link_enabled ta_bort"  href="{{ url_for('main.exercise_entries_delete', exercise_id=exercise.id, entry_id=exercise_entry.id) }}">Ta bort!</a>
+    </div>
+
+    <form action="{{ url_for('main.exercise_entries_edit', exercise_id=exercise.id, entry_id=exercise_entry.id) }}" method="post">
+        <div class="new_post_container">
+            <h4 class="text text_above">Redigera inlägg</h4>
+            
+            {% if exercise.param1 %}
+                <div class="text_and_field">
+                    <h4 class="text">{{ exercise.param1 }}</h4>
+                    <input class="input_field" type="number" min="0", step="0.01" name="value1" value="{{ exercise_entry.value1 }}">
+                </div>
+            {% endif %}
+            
+            {% if exercise.param2 %}
+                <div class="text_and_field">
+                    <h4 class="text">{{ exercise.param2 }}</h4>
+                    <input class="input_field" type="number" min="0", step="0.01" name="value2" value="{{ exercise_entry.value2 if exercise_entry.value2 is not none else '' }}">
+                </div>
+            {% endif %}
+
+        </div>
+        <input class="text blue_box btn" type="submit" value="Ändra">
+    </form>
+
+    <a href="{{ url_for('main.exercises_show', exercise_id=exercise.id) }}" class="back btn link">
+        <p class="text">Tillbaka</p>
+    </a>
+{% endblock %}
