@@ -50,4 +50,21 @@
             {% endfor %}
         </div>
     </div>
+
+    {% if latest|length > 0 %}
+        <div class="senast">
+            <div class="senast_wrapper">
+                <h4 class="subtitle text_above margin_top_60px">Senaste</h4>
+                {% for event in latest %}
+                    <a class="box link" href="/events/{{event['id']}}/show">
+                        <h4 class="text">{{event.name}}</h4>
+                        {% if event.is_favorited %}
+                            <img class="star" src="/static/img/star.svg" alt="Favorit">
+                        {% endif %}
+                        <img class="arrow" src="/static/img/arrow.svg" alt="">
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
 {% endblock %}

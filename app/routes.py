@@ -139,6 +139,7 @@ def exercises_index():
 
     exercises = exercises_query.order_by(Exercise.is_favorited.desc(), Exercise.name).all()
     delays = {exercise.id: 0.03 * index for index, exercise in enumerate(exercises)}
+    latest = _get_latest_exercises(g.user.id)
 
     return render_template(
         "exercises/exercises.html",
@@ -146,6 +147,7 @@ def exercises_index():
         title="TRÄNINGSUTVECKLING",
         exercises=exercises,
         delays=delays,
+        latest=latest,
         muscle_groups=muscle_groups,
         selected_muscle_group=selected_muscle_group,
     )
@@ -155,6 +157,23 @@ def _format_entry_value(value):
     if value is None:
         return None
     return int(value) if value == int(value) else value
+
+
+def _get_latest_exercises(user_id, limit=2):
+    latest_exercises = (
+        db.session.query(Exercise.id, Exercise.name, Exercise.is_favorited)
+        .join(ExerciseEntry, ExerciseEntry.exercise_id == Exercise.id)
+        .filter(Exercise.user_id == user_id)
+        .group_by(Exercise.id, Exercise.name, Exercise.is_favorited)
+        .order_by(db.func.max(ExerciseEntry.created_at).desc())
+        .limit(limit)
+        .all()
+    )
+
+    return [
+        {"id": exercise.id, "name": exercise.name, "is_favorited": exercise.is_favorited}
+        for exercise in latest_exercises
+    ]
 
 
 def _format_display_date(value):
