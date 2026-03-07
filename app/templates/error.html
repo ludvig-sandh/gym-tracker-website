@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+    <link href="{{ url_for('static', filename='css/desktop/error.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <h4 class="subtitle">{{error_msg}}</h4>
+    <a href="{{error_url}}" class="back btn link">
+        <p class="text">Back</p>
+    </a>
+{% endblock %}

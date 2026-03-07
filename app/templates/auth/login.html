@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+    <link href="{{ url_for('static', filename='css/desktop/auth/login.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="center">
+        <form class="log_in_container" action="/login" method="post">
+            <div>
+                <div class="text_and_field">
+                    <h4 class="text text_above margin_top_40px">Username</h4>
+                    <input class="input_field" type="text" name="name">
+                </div>
+                <div class="text_and_field">
+                    <h4 class="text text_above margin_top_40px">Password</h4>
+                    <input class="input_field" type="text" name="password">
+                </div>
+            </div>
+            <input class="text blue_box btn" type="submit" name="log_in" value="Log in">
+        </form>
+    </div>
+{% endblock %}

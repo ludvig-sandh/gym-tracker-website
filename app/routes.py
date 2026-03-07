@@ -9,6 +9,10 @@ from app.models import User
 main = Blueprint("main", __name__)
 
 
+def display_error(msg, path):
+    return redirect(url_for("main.error", error_msg=msg, error_url=path))
+
+
 def login_required(view):
     @wraps(view)
     def wrapped_view(*args, **kwargs):
@@ -54,9 +58,9 @@ def login():
             session["user_id"] = user.id
             return redirect(url_for("main.index"))
         else:
-            message = "Invalid name or password."
+            return display_error("Invalid name or password.", url_for("main.login"))
 
-    return render_template("login.html", message=message)
+    return render_template("auth/login.html", message=message)
 
 
 @main.route("/register", methods=["GET", "POST"])
@@ -84,7 +88,7 @@ def register():
             db.session.commit()
             return redirect(url_for("main.login"))
 
-    return render_template("register.html", message=message)
+    return render_template("auth/register.html", message=message)
 
 
 @main.route("/logout", methods=["POST"])
@@ -92,3 +96,12 @@ def register():
 def logout():
     session.clear()
     return redirect(url_for("main.login"))
+
+@main.route("/error")
+def error():
+    return render_template(
+        "error.html",
+        title="FEL",
+        error_msg=request.args.get("error_msg", ""),
+        error_url=request.args.get("error_url", url_for("main.index")),
+    )
