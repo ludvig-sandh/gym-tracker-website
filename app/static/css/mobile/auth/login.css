@@ -1,0 +1,14 @@
+.blue_box {
+    width: calc(100%);
+    margin-top: 60px;
+}
+
+.log_in_container {
+    width: 100%;
+}
+
+.center {
+    position: absolute;
+    width: calc(100% - 120px);
+    bottom: 60px;
+}

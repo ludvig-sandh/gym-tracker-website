@@ -13,6 +13,23 @@ def display_error(msg, path):
     return redirect(url_for("main.error", error_msg=msg, error_url=path))
 
 
+def mobile():
+    user_agent = request.headers.get('User-Agent')
+    signs_of_mobile = [
+        "Android",
+        "webOS",
+        "iPhone",
+        "iPad",
+        "iPod",
+        "IEMobile",
+        "Opera Mini"
+    ]
+    for sign in signs_of_mobile:
+        if sign in user_agent:
+            return True
+    return False
+
+
 def login_required(view):
     @wraps(view)
     def wrapped_view(*args, **kwargs):
@@ -42,8 +59,6 @@ def index():
 
 @main.route("/login", methods=["GET", "POST"])
 def login():
-    message = None
-
     if g.user is not None:
         return redirect(url_for("main.index"))
 
@@ -60,13 +75,11 @@ def login():
         else:
             return display_error("Invalid name or password.", url_for("main.login"))
 
-    return render_template("auth/login.html", message=message)
+    return render_template("auth/login.html", mobile=mobile())
 
 
 @main.route("/register", methods=["GET", "POST"])
 def register():
-    message = None
-
     if g.user is not None:
         return redirect(url_for("main.index"))
 
@@ -76,11 +89,11 @@ def register():
         repeat_password = request.form.get("repeat_password", "")
 
         if not name or not password:
-            message = "Name and password are required."
+            return display_error("Name and password are required.", url_for("main.register"))
         elif password != repeat_password:
-            message = "Passwords do not match."
+            return display_error("Passwords do not match.", url_for("main.register"))
         elif User.query.filter_by(name=name).first():
-            message = "A user with that name already exists."
+            return display_error("A user with that name already exists.", url_for("main.register"))
         else:
             user = User(name=name)
             user.set_password(password)
@@ -88,7 +101,7 @@ def register():
             db.session.commit()
             return redirect(url_for("main.login"))
 
-    return render_template("auth/register.html", message=message)
+    return render_template("auth/register.html", mobile=mobile())
 
 
 @main.route("/logout", methods=["POST"])
@@ -101,6 +114,7 @@ def logout():
 def error():
     return render_template(
         "error.html",
+        mobile=mobile(),
         title="FEL",
         error_msg=request.args.get("error_msg", ""),
         error_url=request.args.get("error_url", url_for("main.index")),

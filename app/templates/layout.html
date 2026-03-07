@@ -6,8 +6,12 @@
     <meta charset="utf-8">
     <meta name="description" content={{description}}>
     
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <link href="{{ url_for('static', filename='css/desktop/layout.css') }}" rel="stylesheet">
+    {% if mobile == False %}
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <link href="{{ url_for('static', filename='css/desktop/layout.css') }}" rel="stylesheet">
+    {% else %}
+        <link href="{{ url_for('static', filename='css/mobile/layout.css') }}" rel="stylesheet">
+    {% endif %}
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

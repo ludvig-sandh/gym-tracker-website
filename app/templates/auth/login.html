@@ -1,7 +1,11 @@
 {% extends 'layout.html' %}
 
 {% block css %}
-    <link href="{{ url_for('static', filename='css/desktop/auth/login.css') }}" rel="stylesheet">
+    {% if mobile == True %}
+        <link href="{{ url_for('static', filename='css/mobile/auth/login.css') }}" rel="stylesheet">
+    {% else %}
+        <link href="{{ url_for('static', filename='css/desktop/auth/login.css') }}" rel="stylesheet">
+    {% endif %}
 {% endblock %}
 
 {% block content %}
