@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from app.extensions import db
 from werkzeug.security import check_password_hash, generate_password_hash
 
@@ -35,9 +37,23 @@ class Exercise(db.Model):
 
     user = db.relationship("User", back_populates="exercises")
     muscle_groups = db.relationship("MuscleGroup", secondary=exercise_muscle_groups, back_populates="exercises")
+    entries = db.relationship("ExerciseEntry", back_populates="exercise", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Exercise {self.name}>"
+
+
+class ExerciseEntry(db.Model):
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    exercise_id = db.Column(db.Integer, db.ForeignKey("exercise.id"), nullable=False)
+    value1 = db.Column(db.Float, nullable=False)
+    value2 = db.Column(db.Float, nullable=True)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    exercise = db.relationship("Exercise", back_populates="entries")
+
+    def __repr__(self):
+        return f"<ExerciseEntry {self.exercise_id}:{self.id}>"
 
 
 class MuscleGroup(db.Model):
