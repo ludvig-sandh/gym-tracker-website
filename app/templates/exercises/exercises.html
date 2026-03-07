@@ -36,7 +36,7 @@
         </div>
         <div class="övningar_wrapper">
             {% for exercise in exercises %}
-                <a class="box link" href="{{ url_for('main.exercises_show', exercise_id=exercise.id) }}">
+                <a class="box link" style="animation: slide-in 0.2s ease-in-out {{delays.get(exercise.id, 0)}}s normal backwards;" href="{{ url_for('main.exercises_show', exercise_id=exercise.id) }}">
                     <h4 class="text">{{exercise.name}}</h4>
                     {% if exercise.is_favorited %}
                         <img class="star" src="/static/img/star.svg" alt="Favorit">

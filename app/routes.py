@@ -138,12 +138,14 @@ def exercises_index():
         exercises_query = exercises_query.join(Exercise.muscle_groups).filter(MuscleGroup.name == selected_muscle_group)
 
     exercises = exercises_query.order_by(Exercise.name).all()
+    delays = {exercise.id: 0.03 * index for index, exercise in enumerate(exercises)}
 
     return render_template(
         "exercises/exercises.html",
         mobile=mobile(),
         title="TRÄNINGSUTVECKLING",
         exercises=exercises,
+        delays=delays,
         muscle_groups=muscle_groups,
         selected_muscle_group=selected_muscle_group,
     )
