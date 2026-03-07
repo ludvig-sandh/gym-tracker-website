@@ -75,7 +75,7 @@ def login():
         else:
             return display_error("Invalid name or password.", url_for("main.login"))
 
-    return render_template("auth/login.html", mobile=mobile())
+    return render_template("auth/login.html", mobile=mobile(), title="LOGGA IN")
 
 
 @main.route("/register", methods=["GET", "POST"])
@@ -101,7 +101,7 @@ def register():
             db.session.commit()
             return redirect(url_for("main.login"))
 
-    return render_template("auth/register.html", mobile=mobile())
+    return render_template("auth/register.html", mobile=mobile(), title="REGISTRERA")
 
 
 @main.route("/logout", methods=["POST"])
@@ -141,6 +141,7 @@ def exercises_index():
     return render_template(
         "exercises/exercises.html",
         mobile=mobile(),
+        title="TRÄNINGSUTVECKLING",
         exercises=exercises,
         muscle_groups=muscle_groups,
         selected_muscle_group=selected_muscle_group,
