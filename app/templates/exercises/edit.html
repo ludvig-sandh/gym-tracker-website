@@ -1,0 +1,57 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+    {% if mobile == True %}
+        <link href="{{ url_for('static', filename='css/mobile/exercises/edit.css') }}" rel="stylesheet">
+    {% else %}
+        <link href="{{ url_for('static', filename='css/desktop/exercises/edit.css') }}" rel="stylesheet">
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <form class="container_form" action="{{ url_for('main.exercises_edit', exercise_id=exercise.id) }}" method="post">
+        <div class="upper_part">
+            <h4 class="text text_above margin_top_40px">Namn på övning eller mätning</h4>
+            <input class="input_field" type="text" name="name" value="{{ exercise.name }}">
+            <h4 class="text text_above margin_top_40px">Namn på första värde</h4>
+            <input class="input_field" type="text" name="param1" value="{{ exercise.param1 }}">
+            <h4 class="text text_above margin_top_40px">Namn på andra värde</h4>
+            <input class="input_field" type="text" name="param2" value="{{ exercise.param2 or '' }}">
+
+            <div class="top margin_top_40px">
+                {% if exercise.is_favorited == True %}
+                    <input class="checkbox_input" type="checkbox" name="is_favorited" id="is_favorited" checked>
+                {% else %}
+                    <input class="checkbox_input" type="checkbox" name="is_favorited" id="is_favorited">
+                {% endif %}
+                <label class="star_btn" for="is_favorited">
+                    <h4 class="text">Favorit</h4>
+                    <div class="star_container">
+                        <img class="star2" src="/static/img/star.svg" alt="Favorit">
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div class="kategorier_container">
+            <h4 class="text text_above">Välj alla kategorier övningen tillhör</h4>
+            <div class="kategorier_grid">
+                {% for muscle_group in muscle_groups %}
+                    <div class="checkbox_container">
+                        {% if muscle_group.id in selected_muscle_group_ids %}
+                            <input id="select_muscle_group_{{ muscle_group.id }}" class="checkbox" name="muscle_groups" type="checkbox" value="{{ muscle_group.id }}" checked>
+                        {% else %}
+                            <input id="select_muscle_group_{{ muscle_group.id }}" class="checkbox" name="muscle_groups" type="checkbox" value="{{ muscle_group.id }}">
+                        {% endif %}
+                        <label class="btn text checkbox_label" for="select_muscle_group_{{ muscle_group.id }}">{{ muscle_group.name }}</label>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <input class="text blue_box btn" type="submit" name="Lägg till" value="Spara">
+    </form>
+
+    <a href="{{ url_for('main.exercises_show', exercise_id=exercise.id) }}" class="back btn link">
+        <p class="text">Avbryt</p>
+    </a>
+{% endblock %}

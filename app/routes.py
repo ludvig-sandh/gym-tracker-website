@@ -306,3 +306,53 @@ def exercises_new():
         muscle_groups=muscle_groups,
         selected_muscle_group=selected_muscle_group,
     )
+
+@main.route("/exercise/<int:exercise_id>/edit", methods=["GET", "POST"])
+@main.route("/exercises/<int:exercise_id>/edit", methods=["GET", "POST"])
+@login_required
+def exercises_edit(exercise_id):
+    exercise = Exercise.query.filter_by(id=exercise_id, user_id=g.user.id).first()
+
+    if exercise is None:
+        return display_error("Denna övningen finns inte.", url_for("main.exercises_index"))
+
+    muscle_groups = MuscleGroup.ordered().all()
+
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        param1 = request.form.get("param1", "").strip()
+        param2 = request.form.get("param2", "").strip() or None
+        is_favorited = request.form.get("is_favorited") == "on"
+        selected_group_ids = request.form.getlist("muscle_groups")
+
+        if not name:
+            return display_error("Namnet får inte vara tomt.", request.path)
+        if not param1:
+            return display_error("Första värdet får inte vara tomt.", request.path)
+        if not selected_group_ids:
+            return display_error("Välj minst en muskelgrupp.", request.path)
+
+        selected_muscle_groups = MuscleGroup.query.filter(MuscleGroup.id.in_(selected_group_ids)).all()
+
+        if len(selected_muscle_groups) != len(selected_group_ids):
+            return display_error("En eller fler muskelgrupper är ogiltiga.", request.path)
+
+        exercise.name = name
+        exercise.param1 = param1
+        exercise.param2 = param2
+        exercise.is_favorited = is_favorited
+        exercise.muscle_groups = selected_muscle_groups
+
+        db.session.commit()
+        return redirect(url_for("main.exercises_show", exercise_id=exercise.id))
+
+    selected_muscle_group_ids = {group.id for group in exercise.muscle_groups}
+
+    return render_template(
+        "exercises/edit.html",
+        mobile=mobile(),
+        title="REDIGERA OVNING",
+        exercise=exercise,
+        muscle_groups=muscle_groups,
+        selected_muscle_group_ids=selected_muscle_group_ids,
+    )
