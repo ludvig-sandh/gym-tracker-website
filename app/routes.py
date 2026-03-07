@@ -139,7 +139,8 @@ def exercises_index():
     exercises = exercises_query.order_by(Exercise.name).all()
 
     return render_template(
-        "exercises.html",
+        "exercises/exercises.html",
+        mobile=mobile(),
         exercises=exercises,
         muscle_groups=muscle_groups,
         selected_muscle_group=selected_muscle_group,

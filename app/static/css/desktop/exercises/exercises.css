@@ -1,0 +1,181 @@
+.events_index_container {
+    position: absolute;
+    width: calc(100% - 120px);
+    height: 20%;
+    display: grid;
+    grid-template-areas:
+    'kategorier'
+    'övningar'
+    'senast';
+}
+
+.kategorier {
+    grid-template-areas: "kategorier";
+}
+
+/* For mobile */
+@media screen and (max-width: 768px) {
+    .kategorier_container {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-rows: repeat(2, minmax(0, 1fr));
+        width: 100%;
+        display: grid;
+        gap: 0.9vw;
+    }
+
+    .övningar {
+        top: calc(12vh + 22vw);
+        bottom: calc(100px + 3vh);
+    }
+
+    .senast_wrapper {
+        width: 100%;
+    }
+
+    .logout_a {
+        position: absolute;
+        top: calc(2.5vh + 2.5px);
+        right: 23px;
+        width: 23px;
+        height: 23px;
+    }
+    
+    .logout_img {
+        width: 23px;
+        height: 23px;
+        fill: white;
+        color: white;
+    }
+
+    .övningar {
+        grid-template-areas: "övningar";
+        position: absolute;
+        width: calc(100% - 48px);
+    }
+
+    .övningar_wrapper {
+        max-height: calc(100% - 180px);
+    }
+
+    .senast {
+        grid-template-areas: "senast";
+        position: absolute;
+        bottom: 24px;
+        
+        width: calc(100% - 48px);
+        gap: 3px;
+    }
+
+    .senast_wrapper > .box {
+        margin-top: 0.2rem;
+    }
+
+    .övningarrow > * {
+        flex-grow: 1;
+        margin-bottom: 14px;
+    }
+
+    .övningar_wrapper > .box {
+        margin-top: 0.2rem;
+    }
+}
+
+/* For desktop */
+@media screen and (min-width: 769px) {
+    .kategorier_container {
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+        grid-template-rows: 1;
+        width: 100%;
+        display: grid;
+        gap: 0.6rem;
+    }
+
+    .övningar {
+        top: 17rem;
+        bottom: 10rem;
+    }
+
+    .övningar_wrapper {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.6rem;
+    }
+
+    .senast_wrapper {
+        width: calc(25% - 0.6rem);
+    }
+
+    .logout_a {
+        position: absolute;
+        top: 3.5rem;
+        right: 60px;
+        width: 60px;
+        height: 60px;
+    }
+    
+    .logout_img {
+        width: 60px;
+        height: 60px;
+        fill: white;
+        color: white;
+    }
+
+    .övningar {
+        grid-template-areas: "övningar";
+        position: absolute;
+        width: calc(100% - 120px);
+    }
+
+    .övningar_wrapper {
+        max-height: calc(100% - 180px);
+    }
+
+    .senast {
+        grid-template-areas: "senast";
+        position: absolute;
+        bottom: 60px;
+        
+        width: calc(100% - 120px);
+        gap: 0.6rem;
+    }
+
+    .senast_wrapper > .box {
+        margin-top: 0.6rem;
+    }
+
+    .övningarrow > * {
+        flex-grow: 1;
+        margin-bottom: 1.4rem;
+    }
+}
+
+.övningarrow {
+    display: flex;
+    justify-content: center;
+}
+
+
+
+.övningar_text_right {
+    text-align: right;
+}
+
+.övningar_wrapper {
+    width: 100%;
+    height: auto;
+    overflow-y: scroll;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.övningar_wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.senast_wrapper {
+    position: relative;
+    height: 100%;
+}
+
+
+

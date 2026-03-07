@@ -1,0 +1,52 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+    {% if mobile == True %}
+        <link href="{{ url_for('static', filename='css/mobile/exercises/exercises.css') }}" rel="stylesheet">
+    {% else %}
+        <link href="{{ url_for('static', filename='css/desktop/exercises/exercises.css') }}" rel="stylesheet">
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <form action="{{ url_for('main.logout') }}" method="post">
+        <button class="smalltext link link_enabled logout_a" type="submit">
+            <img class="logout_img" src="/static/img/logout.svg" alt="Logga ut">
+        </button>
+    </form>
+    <div class="kategorier">
+        <h4 class="text_above subtitle">Filtrera övningar efter kategorier</h4>
+        <form class="kategorier_container" action="{{ url_for('main.exercises_index') }}" method="get">
+            {% for muscle_group in muscle_groups %}
+                {% if muscle_group.name == selected_muscle_group %}
+                    <button class="btn glass_thicker text" type="submit">{{ muscle_group.name }}</button>
+                {% else %}
+                    <button class="btn glass text" name="muscle_group" type="submit" value="{{ muscle_group.name }}">{{ muscle_group.name }}</button>
+                {% endif %}
+            {% endfor %}
+        </form>
+    </div>
+
+    <div class="övningar">
+        <div class="övningarrow">
+            <h4 class="subtitle text_above margin_top_40px">
+                Övningar{% if selected_muscle_group %} - {{ selected_muscle_group }}{% endif %}
+            </h4>
+        </div>
+        <div class="övningar_wrapper">
+            {% for exercise in exercises %}
+                <div class="box">
+                    <h4 class="text">{{exercise.name}}</h4>
+                    {% if exercise.is_favorited %}
+                        <img class="star" src="/static/img/star.svg" alt="Favorit">
+                    {% endif %}
+                    <img class="arrow" src="/static/img/arrow.svg" alt="">
+                </div>
+            {% else %}
+                <div class="box">
+                    <h4 class="text">Inga övningar hittades.</h4>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
