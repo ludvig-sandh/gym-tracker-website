@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Exercises | Gym Tracker{% endblock %}
+
+{% block content %}
+<h2>Exercises</h2>
+
+<p>
+  Filter:
+  <a href="{{ url_for('main.exercises_index') }}">All exercises</a>
+</p>
+
+<ul>
+  {% for muscle_group in muscle_groups %}
+  <li>
+    {% if muscle_group.name == selected_muscle_group %}
+    <strong>{{ muscle_group.name }}</strong>
+    {% else %}
+    <a href="{{ url_for('main.exercises_index', muscle_group=muscle_group.name) }}">{{ muscle_group.name }}</a>
+    {% endif %}
+  </li>
+  {% endfor %}
+</ul>
+
+{% if exercises %}
+<ul>
+  {% for exercise in exercises %}
+  <li>
+    <strong>{{ exercise.name }}</strong>
+    <span>({{ exercise.param1 }} / {{ exercise.param2 }})</span>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>No exercises found.</p>
+{% endif %}
+
+<form action="{{ url_for('main.logout') }}" method="post">
+  <button type="submit">Log out</button>
+</form>
+{% endblock %}

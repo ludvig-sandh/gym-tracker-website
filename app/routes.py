@@ -3,7 +3,7 @@ from functools import wraps
 from flask import Blueprint, g, redirect, render_template, request, session, url_for
 
 from app.extensions import db
-from app.models import User
+from app.models import Exercise, MuscleGroup, User
 
 
 main = Blueprint("main", __name__)
@@ -54,13 +54,13 @@ def load_logged_in_user():
 @main.route("/")
 @login_required
 def index():
-    return render_template("index.html")
+    return redirect(url_for("main.exercises_index"))
 
 
 @main.route("/login", methods=["GET", "POST"])
 def login():
     if g.user is not None:
-        return redirect(url_for("main.index"))
+        return redirect(url_for("main.exercises_index"))
 
     if request.method == "POST":
         name = request.form.get("name", "").strip()
@@ -71,7 +71,7 @@ def login():
         if user and user.check_password(password):
             session.clear()
             session["user_id"] = user.id
-            return redirect(url_for("main.index"))
+            return redirect(url_for("main.exercises_index"))
         else:
             return display_error("Invalid name or password.", url_for("main.login"))
 
@@ -118,4 +118,29 @@ def error():
         title="FEL",
         error_msg=request.args.get("error_msg", ""),
         error_url=request.args.get("error_url", url_for("main.index")),
+    )
+
+@main.route("/exercise")
+@main.route("/exercises")
+@login_required
+def exercises_index():
+    selected_muscle_group = request.args.get("muscle_group", "").strip()
+    muscle_groups = MuscleGroup.ordered().all()
+
+    exercises_query = Exercise.query.filter_by(user_id=g.user.id)
+
+    if selected_muscle_group:
+        valid_group = next((group for group in muscle_groups if group.name == selected_muscle_group), None)
+        if valid_group is None:
+            return display_error("Invalid muscle group filter.", url_for("main.exercises_index"))
+
+        exercises_query = exercises_query.join(Exercise.muscle_groups).filter(MuscleGroup.name == selected_muscle_group)
+
+    exercises = exercises_query.order_by(Exercise.name).all()
+
+    return render_template(
+        "exercises.html",
+        exercises=exercises,
+        muscle_groups=muscle_groups,
+        selected_muscle_group=selected_muscle_group,
     )
