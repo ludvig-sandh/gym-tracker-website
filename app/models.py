@@ -29,8 +29,8 @@ class Exercise(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(120), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    param1 = db.Column(db.String(80), nullable=False, default="Weight")
-    param2 = db.Column(db.String(80), nullable=False, default="Reps")
+    param1 = db.Column(db.String(80), nullable=False)
+    param2 = db.Column(db.String(80), nullable=True)
     is_favorited = db.Column(db.Boolean, nullable=False, default=False)
 
     user = db.relationship("User", back_populates="exercises")

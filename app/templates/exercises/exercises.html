@@ -32,6 +32,7 @@
             <h4 class="subtitle text_above margin_top_40px">
                 Övningar{% if selected_muscle_group %} - {{ selected_muscle_group }}{% endif %}
             </h4>
+            <a class="text text_above margin_top_40px övningar_text_right link link_enabled" href="{{ url_for('main.exercises_new', muscle_group=selected_muscle_group) if selected_muscle_group else url_for('main.exercises_new') }}">Lägg till +</a>
         </div>
         <div class="övningar_wrapper">
             {% for exercise in exercises %}

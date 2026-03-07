@@ -145,3 +145,50 @@ def exercises_index():
         muscle_groups=muscle_groups,
         selected_muscle_group=selected_muscle_group,
     )
+
+
+@main.route("/exercise/new", methods=["GET", "POST"])
+@main.route("/exercises/new", methods=["GET", "POST"])
+@login_required
+def exercises_new():
+    muscle_groups = MuscleGroup.ordered().all()
+    selected_muscle_group = request.args.get("muscle_group", "").strip()
+
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        param1 = request.form.get("param1", "").strip()
+        param2 = request.form.get("param2", "").strip() or None
+        is_favorited = request.form.get("is_favorited") == "on"
+        selected_group_ids = request.form.getlist("muscle_groups")
+
+        if not name:
+            return display_error("Namnet får inte vara tomt.", url_for("main.exercises_new"))
+        if not param1:
+            return display_error("Första värdet får inte vara tomt.", url_for("main.exercises_new"))
+        if not selected_group_ids:
+            return display_error("Välj minst en muskelgrupp.", url_for("main.exercises_new"))
+
+        selected_muscle_groups = MuscleGroup.query.filter(MuscleGroup.id.in_(selected_group_ids)).all() if selected_group_ids else []
+
+        if len(selected_muscle_groups) != len(selected_group_ids):
+            return display_error("En eller fler muskelgrupper är ogiltiga.", url_for("main.exercises_new"))
+
+        exercise = Exercise(
+            name=name,
+            user_id=g.user.id,
+            param1=param1,
+            param2=param2,
+            is_favorited=is_favorited,
+        )
+        exercise.muscle_groups = selected_muscle_groups
+
+        db.session.add(exercise)
+        db.session.commit()
+        return redirect(url_for("main.exercises_index"))
+
+    return render_template(
+        "exercises/new.html",
+        mobile=mobile(),
+        muscle_groups=muscle_groups,
+        selected_muscle_group=selected_muscle_group,
+    )
