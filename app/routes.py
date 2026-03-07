@@ -428,7 +428,7 @@ def exercises_edit(exercise_id):
     return render_template(
         "exercises/edit.html",
         mobile=mobile(),
-        title="REDIGERA OVNING",
+        title="REDIGERA ÖVNING",
         exercise=exercise,
         muscle_groups=muscle_groups,
         selected_muscle_group_ids=selected_muscle_group_ids,
