@@ -1,0 +1,34 @@
+.blue_box {
+    position: absolute;
+    bottom: 150px;
+}
+
+.red_box {
+    background: rgb(255, 72, 72);
+}
+
+/* For mobile */
+@media screen and (max-width: 768px) {
+    .red_box {
+        width: calc(100% - 60px);
+    }
+}
+
+/* For desktop */
+@media screen and (min-width: 769px) {
+    .back {
+        transform: translateX(calc(50% + 60px));
+    }
+
+    .red_box {
+        width: calc(50% - 120px);
+        transform: translateX(calc(50% + 60px));
+        bottom: calc(75px + 5vh);
+    }
+
+    .subtitle {
+        text-align: center;
+        width: calc(50% - 120px);
+        transform: translateX(calc(50% + 60px));
+    }
+}

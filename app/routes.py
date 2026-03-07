@@ -356,3 +356,25 @@ def exercises_edit(exercise_id):
         muscle_groups=muscle_groups,
         selected_muscle_group_ids=selected_muscle_group_ids,
     )
+
+
+@main.route("/exercise/<int:exercise_id>/delete", methods=["GET", "POST"])
+@main.route("/exercises/<int:exercise_id>/delete", methods=["GET", "POST"])
+@login_required
+def exercises_delete(exercise_id):
+    exercise = Exercise.query.filter_by(id=exercise_id, user_id=g.user.id).first()
+
+    if exercise is None:
+        return display_error("Denna övningen finns inte.", url_for("main.exercises_index"))
+
+    if request.method == "POST":
+        db.session.delete(exercise)
+        db.session.commit()
+        return redirect(url_for("main.exercises_index"))
+
+    return render_template(
+        "exercises/delete.html",
+        mobile=mobile(),
+        title="RADERA " + exercise.name.upper(),
+        exercise=exercise,
+    )

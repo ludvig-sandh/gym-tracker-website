@@ -1,0 +1,9 @@
+.blue_box {
+    width: calc(100% - 120px);
+    position: absolute;
+    bottom: 150px;
+}
+
+.red_box {
+    background: rgb(255, 72, 72);
+}
