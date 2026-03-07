@@ -20,5 +20,6 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+        models.seed_muscle_groups()
 
     return app
