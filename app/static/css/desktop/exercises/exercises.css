@@ -38,6 +38,9 @@
         right: 23px;
         width: 23px;
         height: 23px;
+        border: none;
+        background: transparent;
+        padding: 0;
     }
     
     .logout_img {
@@ -111,6 +114,9 @@
         right: 60px;
         width: 60px;
         height: 60px;
+        border: none;
+        background: transparent;
+        padding: 0;
     }
     
     .logout_img {
@@ -176,6 +182,5 @@
     position: relative;
     height: 100%;
 }
-
 
 

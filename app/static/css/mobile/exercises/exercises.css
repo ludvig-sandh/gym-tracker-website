@@ -88,6 +88,9 @@
     right: 60px;
     width: 60px;
     height: 60px;
+    border: none;
+    background: transparent;
+    padding: 0;
 }
 
 .logout_img {
