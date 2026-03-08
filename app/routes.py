@@ -170,10 +170,7 @@ def _get_latest_exercises(user_id, limit=2):
         .all()
     )
 
-    return [
-        {"id": exercise.id, "name": exercise.name, "is_favorited": exercise.is_favorited}
-        for exercise in latest_exercises
-    ]
+    return latest_exercises
 
 
 def _format_display_date(value):

@@ -55,10 +55,10 @@
         <div class="senast">
             <div class="senast_wrapper">
                 <h4 class="subtitle text_above margin_top_60px">Senaste</h4>
-                {% for event in latest %}
-                    <a class="box link" href="/events/{{event['id']}}/show">
-                        <h4 class="text">{{event.name}}</h4>
-                        {% if event.is_favorited %}
+                {% for exercise in latest %}
+                    <a class="box link" href="/exercises/{{exercise.id}}">
+                        <h4 class="text">{{exercise.name}}</h4>
+                        {% if exercise.is_favorited %}
                             <img class="star" src="/static/img/star.svg" alt="Favorit">
                         {% endif %}
                         <img class="arrow" src="/static/img/arrow.svg" alt="">
