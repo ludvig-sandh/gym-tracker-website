@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-    {% if chart.labels %}
+    {% if chart.current_series %}
         <div class="stats_grid">
             <div class="summary_row">
                 <div class="box stat_box">
@@ -58,18 +58,21 @@
         <p class="text">Tillbaka</p>
     </a>
 
-    {% if chart.labels %}
+    {% if chart.current_series %}
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
-            const labels = {{ chart.labels|tojson }};
             const currentSeries = {{ chart.current_series|tojson }};
             const bestSeries = {{ chart.best_series|tojson }};
             const chartContext = document.getElementById('statistics-chart');
+            const dateFormatter = new Intl.DateTimeFormat('sv-SE', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric',
+            });
 
             new Chart(chartContext, {
                 type: 'line',
                 data: {
-                    labels,
                     datasets: [
                         {
                             label: 'Bästa hittills',
@@ -80,6 +83,7 @@
                             pointRadius: 0,
                             stepped: true,
                             tension: 0,
+                            parsing: false,
                         },
                         {
                             label: 'Dagens tyngsta',
@@ -93,6 +97,7 @@
                             pointBorderColor: '#ffffff',
                             pointBorderWidth: 1.5,
                             tension: 0.2,
+                            parsing: false,
                         }
                     ]
                 },
@@ -114,10 +119,18 @@
                             borderWidth: 1,
                             titleColor: '#ffffff',
                             bodyColor: '#ffffff',
+                            callbacks: {
+                                title(items) {
+                                    return dateFormatter.format(new Date(items[0].parsed.x));
+                                }
+                            }
                         }
                     },
                     scales: {
                         x: {
+                            type: 'linear',
+                            bounds: 'data',
+                            offset: false,
                             grid: {
                                 display: false,
                             },
@@ -126,10 +139,13 @@
                                 maxRotation: 0,
                                 autoSkip: true,
                                 maxTicksLimit: 6,
+                                callback(value) {
+                                    return dateFormatter.format(new Date(value));
+                                }
                             },
                             border: {
                                 color: 'rgba(255, 255, 255, 0.55)',
-                            }
+                            },
                         },
                         y: {
                             grace: '4%',

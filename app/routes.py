@@ -195,22 +195,20 @@ def _build_statistics_chart_data(exercise):
         if current_max is None or entry.value1 > current_max:
             daily_max[entry_date] = entry.value1
 
-    labels = []
     current_series = []
     best_series = []
     running_best = 0
     for entry_date, max_value in sorted(daily_max.items()):
         running_best = max(running_best, max_value)
-        labels.append(_format_chart_date(datetime.datetime.combine(entry_date, datetime.time())))
-        current_series.append(float(max_value))
-        best_series.append(float(running_best))
+        timestamp = int(datetime.datetime.combine(entry_date, datetime.time()).timestamp() * 1000)
+        current_series.append({"x": timestamp, "y": float(max_value)})
+        best_series.append({"x": timestamp, "y": float(running_best)})
 
     return {
-        "labels": labels,
         "current_series": current_series,
         "best_series": best_series,
-        "latest_value": _format_entry_value(current_series[-1]) if current_series else None,
-        "best_value": _format_entry_value(best_series[-1]) if best_series else None,
+        "latest_value": _format_entry_value(current_series[-1]["y"]) if current_series else None,
+        "best_value": _format_entry_value(best_series[-1]["y"]) if best_series else None,
     }
 
 
