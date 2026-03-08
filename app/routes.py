@@ -177,6 +177,43 @@ def _format_display_date(value):
     return value.strftime("%a, %d %b %Y")
 
 
+def _format_chart_date(value):
+    return value.strftime("%d %b %Y")
+
+
+def _build_statistics_chart_data(exercise):
+    entries = (
+        ExerciseEntry.query.filter_by(exercise_id=exercise.id)
+        .order_by(ExerciseEntry.created_at.asc(), ExerciseEntry.id.asc())
+        .all()
+    )
+
+    daily_max = {}
+    for entry in entries:
+        entry_date = entry.created_at.date()
+        current_max = daily_max.get(entry_date)
+        if current_max is None or entry.value1 > current_max:
+            daily_max[entry_date] = entry.value1
+
+    labels = []
+    current_series = []
+    best_series = []
+    running_best = 0
+    for entry_date, max_value in sorted(daily_max.items()):
+        running_best = max(running_best, max_value)
+        labels.append(_format_chart_date(datetime.datetime.combine(entry_date, datetime.time())))
+        current_series.append(float(max_value))
+        best_series.append(float(running_best))
+
+    return {
+        "labels": labels,
+        "current_series": current_series,
+        "best_series": best_series,
+        "latest_value": _format_entry_value(current_series[-1]) if current_series else None,
+        "best_value": _format_entry_value(best_series[-1]) if best_series else None,
+    }
+
+
 def _build_exercise_days(exercise):
     entries = (
         ExerciseEntry.query.filter_by(exercise_id=exercise.id)
@@ -254,6 +291,24 @@ def exercises_show(exercise_id):
         title=exercise.name,
         exercise=exercise,
         days=_build_exercise_days(exercise),
+    )
+
+
+@main.route("/exercise/<int:exercise_id>/statistics")
+@main.route("/exercises/<int:exercise_id>/statistics")
+@login_required
+def exercises_statistics(exercise_id):
+    exercise = Exercise.query.filter_by(id=exercise_id, user_id=g.user.id).first()
+
+    if exercise is None:
+        return display_error("Denna övningen finns inte.", url_for("main.exercises_index"))
+
+    return render_template(
+        "exercises/statistics.html",
+        mobile=mobile(),
+        title=f"STATISTIK - {exercise.name.upper()}",
+        exercise=exercise,
+        chart=_build_statistics_chart_data(exercise),
     )
 
 

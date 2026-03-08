@@ -1,0 +1,105 @@
+.stats_grid {
+    position: absolute;
+    top: 8.5rem;
+    bottom: 9rem;
+    width: calc(100% - 120px);
+    overflow-y: auto;
+    padding-right: 0.6rem;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.stats_grid::-webkit-scrollbar {
+    display: none;
+}
+
+.summary_row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+}
+
+.stat_box {
+    min-height: 7rem;
+}
+
+.stat_inner {
+    margin-left: 1.5rem;
+}
+
+.chart_card {
+    display: block;
+    height: auto;
+    min-height: 34rem;
+    padding: 1.5rem;
+}
+
+.chart_intro {
+    margin-bottom: 1rem;
+}
+
+.chart_description {
+    margin-top: 0.4rem;
+    color: #EEEEEECC;
+}
+
+.legend {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.legend_item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.legend_swatch {
+    width: 2.5rem;
+    height: 0.35rem;
+    border-radius: 999px;
+    display: inline-block;
+}
+
+.current_line {
+    background: #ffffff;
+}
+
+.best_line {
+    background: #ffffff88;
+}
+
+.chart_shell {
+    width: 100%;
+    height: 24rem;
+    min-height: 24rem;
+}
+
+.chart {
+    width: 100%;
+    height: 100%;
+}
+
+.empty_box {
+    width: calc(100% - 120px);
+    min-height: 10rem;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.empty_box > * {
+    margin-left: 1.5rem;
+}
+
+.back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.back > .text {
+    margin-left: 0;
+}

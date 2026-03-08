@@ -1,0 +1,151 @@
+{% extends 'layout.html' %}
+
+{% block css %}
+    {% if mobile == True %}
+        <link href="{{ url_for('static', filename='css/mobile/exercises/statistics.css') }}" rel="stylesheet">
+    {% else %}
+        <link href="{{ url_for('static', filename='css/desktop/exercises/statistics.css') }}" rel="stylesheet">
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% if chart.labels %}
+        <div class="stats_grid">
+            <div class="summary_row">
+                <div class="box stat_box">
+                    <div class="stat_inner">
+                        <h4 class="smalltext">Senaste</h4>
+                        <h4 class="subtitle">{{ chart.latest_value }}</h4>
+                    </div>
+                </div>
+                <div class="box stat_box">
+                    <div class="stat_inner">
+                        <h4 class="smalltext">Personbästa</h4>
+                        <h4 class="subtitle">{{ chart.best_value }}</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box chart_card">
+                <div class="chart_intro">
+                    <h4 class="subtitle">Utveckling över tid</h4>
+                </div>
+
+                <div class="legend">
+                    <div class="legend_item">
+                        <span class="legend_swatch current_line"></span>
+                        <p class="smalltext">Dagens högsta</p>
+                    </div>
+                    <div class="legend_item">
+                        <span class="legend_swatch best_line"></span>
+                        <p class="smalltext">Bästa hittills</p>
+                    </div>
+                </div>
+
+                <div class="chart_shell">
+                    <canvas id="statistics-chart" class="chart" aria-label="Graf över utveckling för {{ exercise.name }}"></canvas>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <div class="box empty_box">
+            <h4 class="subtitle">Ingen statistik än</h4>
+            <p class="text">Lägg till inlägg för att se utvecklingen här.</p>
+        </div>
+    {% endif %}
+
+    <a href="{{ url_for('main.exercises_show', exercise_id=exercise.id) }}" class="back btn link">
+        <p class="text">Tillbaka</p>
+    </a>
+
+    {% if chart.labels %}
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            const labels = {{ chart.labels|tojson }};
+            const currentSeries = {{ chart.current_series|tojson }};
+            const bestSeries = {{ chart.best_series|tojson }};
+            const chartContext = document.getElementById('statistics-chart');
+
+            new Chart(chartContext, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [
+                        {
+                            label: 'Bästa hittills',
+                            data: bestSeries,
+                            borderColor: 'rgba(255, 255, 255, 0.42)',
+                            backgroundColor: 'rgba(255, 255, 255, 0)',
+                            borderWidth: 3,
+                            pointRadius: 0,
+                            stepped: true,
+                            tension: 0,
+                        },
+                        {
+                            label: 'Dagens tyngsta',
+                            data: currentSeries,
+                            borderColor: 'rgba(255, 255, 255, 0.96)',
+                            backgroundColor: 'rgba(255, 255, 255, 0)',
+                            borderWidth: 2.5,
+                            pointRadius: 2,
+                            pointHoverRadius: 4,
+                            pointBackgroundColor: '#23a6d5',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 1.5,
+                            tension: 0.2,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(35, 35, 35, 0.92)',
+                            borderColor: 'rgba(255, 255, 255, 0.18)',
+                            borderWidth: 1,
+                            titleColor: '#ffffff',
+                            bodyColor: '#ffffff',
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false,
+                            },
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.82)',
+                                maxRotation: 0,
+                                autoSkip: true,
+                                maxTicksLimit: 6,
+                            },
+                            border: {
+                                color: 'rgba(255, 255, 255, 0.55)',
+                            }
+                        },
+                        y: {
+                            grace: '4%',
+                            ticks: {
+                                color: 'rgba(255, 255, 255, 0.82)',
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.14)',
+                            },
+                            border: {
+                                color: 'rgba(255, 255, 255, 0.55)',
+                            }
+                        }
+                    }
+                }
+            });
+        </script>
+    {% endif %}
+{% endblock %}
