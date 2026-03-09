@@ -71,6 +71,7 @@ def login():
 
         if user and user.check_password(password):
             session.clear()
+            session.permanent = True
             session["user_id"] = user.id
             return redirect(url_for("main.exercises_index"))
         else:
