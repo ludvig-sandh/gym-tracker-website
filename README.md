@@ -19,9 +19,12 @@ For a prod server deployment behind Nginx:
 
 ```bash
 SECRET_KEY=replace-with-a-long-random-secret
+HOST_BIND=127.0.0.1
+HOST_PORT=5000
 ```
 
 This key is used by Flask to securely sign session and other sensitive data.
+`HOST_PORT` is the port nginx should proxy to on the server.
 
 2. Start the app:
 
@@ -29,4 +32,4 @@ This key is used by Flask to securely sign session and other sensitive data.
 docker compose up -d --build
 ```
 
-The compose file mounts `./instance` to `/app/instance` so the SQLite database persists
+The container runs Gunicorn and mounts `./instance` to `/app/instance` so the SQLite database persists.
