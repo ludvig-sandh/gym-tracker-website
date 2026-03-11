@@ -1,5 +1,6 @@
 # gym-tracker-website
-A website that lets you track gym progress, written in Python with Flask
+An application that my friends and I have been using to track our gym progress since 2022.
+Written in Python with Flask.
 
 ## Setup
 
